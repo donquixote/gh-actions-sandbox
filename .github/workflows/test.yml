@@ -10,7 +10,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      #- uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       - name: Test gh release list 1
         continue-on-error: true
         run: |
