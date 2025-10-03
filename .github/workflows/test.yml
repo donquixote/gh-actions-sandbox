@@ -16,6 +16,7 @@ jobs:
           gh release list
       - name: Test gh release list 2
         run: |
+          set -ex
           gh release list --json name
           gh release list --json name --jq '.[].name'
           gh release list --json tagName
