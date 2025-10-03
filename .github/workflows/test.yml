@@ -19,7 +19,7 @@ jobs:
           set -ex
           gh release list --json name
           gh release list --json name --jq '.[].name'
-          gh release list --json tagName,name --jq '.[].name .[].tagName'
+          gh release list --json tagName,name --jq '.[].name + ", " + .[].tagName'
           gh release list --exclude-drafts
       - name: Test gh release view
         run: |
