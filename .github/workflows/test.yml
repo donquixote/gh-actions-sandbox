@@ -23,6 +23,7 @@ jobs:
           gh release list --json name --jq '.[].name'
           gh release list --json tagName,name --jq '.[].name + ", " + .[].tagName'
           gh release list --exclude-drafts
+      - run: exit 0
       - name: Test gh release view 1
         continue-on-error: true
         run: |
