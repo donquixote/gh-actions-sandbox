@@ -11,6 +11,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v2
+
       - name: Test gh release list 1
         run: |
           gh release list
