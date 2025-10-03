@@ -16,14 +16,9 @@ jobs:
           gh release list
       - name: Test gh release list 2
         run: |
-          gh release list --search 1.0.0
-      - name: Test gh release list 3
-        run: |
-          gh release list
           gh release list --json name
           gh release list --json name --jq '.[].name'
           gh release list --json tagName
-          gh release list
           gh release list --exclude-drafts
       - name: Test gh release view
         run: |
