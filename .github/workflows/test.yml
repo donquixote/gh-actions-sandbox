@@ -23,4 +23,4 @@ jobs:
           gh release list --exclude-drafts
       - name: Test gh release view
         run: |
-          gh release view 1.0.0
+          gh release view r1.0.0
