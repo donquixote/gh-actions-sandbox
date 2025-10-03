@@ -10,7 +10,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - uses: actions/checkout@v2
+      #- uses: actions/checkout@v2
       - name: Test gh release list 1
         continue-on-error: true
         run: |
@@ -30,4 +30,4 @@ jobs:
       - name: Test gh release view 2
         continue-on-error: true
         run: |
-          gh release view r1.0.0
+          gh release view 1.0.0 --json name --jq '.name'
