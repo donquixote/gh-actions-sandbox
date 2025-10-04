@@ -45,6 +45,7 @@ jobs:
       - run: echo "TAG_NAME=${{ needs.prepare.outputs.tag }}" >> $GITHUB_ENV
       - run: echo $TAG_NAME
       - name: "Tag: $TAG_NAME"
+        run: ''
       - uses: actions/checkout@v2
       - name: Test gh release list 1
         continue-on-error: true
