@@ -41,10 +41,14 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - run: 'echo "Value from prepare step: [${{ needs.prepare.outputs.tag }}]"'
-      - run: echo "TAG_NAME=${{ needs.prepare.outputs.tag }}" >> $GITHUB_ENV
-      - run: 'echo "Tag name: [$TAG_NAME]"'
-      - name: "Tag: [$TAG_NAME]"
+      - run: 'echo "Value from prepare step: ${{ needs.prepare.outputs.tag }}"'
+      - run: |
+          set -e
+          echo "TAG_NAME=${{ needs.prepare.outputs.tag }}" >> $GITHUB_ENV
+          echo $GITHUB_ENV
+          cat $GITHUB_ENV
+      - run: 'echo "Tag name: $TAG_NAME"'
+      - name: "Tag: $TAG_NAME"
         run: ''
       - uses: actions/checkout@v2
       - name: Test gh release list 1
