@@ -1,7 +1,8 @@
-name: test
 on:
+  release:
+    types: [published]
   push:
-    branches:
+    tags:
       - '*'
 
 jobs:
@@ -27,13 +28,13 @@ jobs:
           fi
           echo "Tag name: $TAG_NAME"
           if [ ! IS_DRAFT=$(gh release view --json isDraft $TAG_NAME) ]; then
-            echo "No release found"
+            echo "Release $TAG_NAME not found"
             HAS_PUBLIC_RELEASE=false
           elif [ $IS_DRAFT -eq 'false' ]; then
-            echo "Release is not public"
+            echo "Release $TAG_NAME is not public"
             HAS_PUBLIC_RELEASE=true
           else
-            echo "Release is public"
+            echo "Release $TAG_NAME is public"
             HAS_PUBLIC_RELEASE=false
           fi
           echo "Has public release: $HAS_PUBLIC_RELEASE"
