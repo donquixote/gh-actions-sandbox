@@ -29,11 +29,15 @@ jobs:
           echo "Tag name: $TAG_NAME"
           IS_DRAFT=$(gh release view --json isDraft --jq '.isDraft' $TAG_NAME 2>/dev/null) || true
           if [[ $IS_DRAFT == "false" ]]; then
-            echo "Success, there is a public release"
+            echo "There is a public release for '$TAG_NAME'."
             echo "tag=$TAG_NAME" >> "$GITHUB_OUTPUT"
           else
-            echo "Failure, there is no public release"
-            echo "tag=''" >> "$GITHUB_OUTPUT"
+            if [[ $IS_DRAFT == "true" ]]; then
+              echo "The release for '$TAG_NAME' is a draft."
+            else
+              echo "There is no release for '$TAG_NAME'."
+            fi
+            echo "tag=" >> "$GITHUB_OUTPUT"
           fi
           cat $GITHUB_OUTPUT
 
