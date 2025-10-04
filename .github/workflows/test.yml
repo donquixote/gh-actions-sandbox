@@ -5,6 +5,34 @@ on:
       - '*'
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.get_tag.outputs.tag }}
+    steps:
+      - name: Determine the tag name
+        id: get_tag_name
+        run: |
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            TAG_NAME=${{ github.event.release.tag_name }}
+          elif [[ "${{ github.event_name }}" == "push" ]]; then
+            TAG_NAME=${{ github.ref_name }}
+          else
+            # Unreachable code.
+            exit 1
+          fi
+          IS_DRAFT=$(gh release view --json isDraft $TAG_NAME)
+          if [ ! $? -eq 0 ]; then
+            HAS_PUBLIC_RELEASE=false
+          elif [ $IS_DRAFT -eq 'false' ]; then
+            HAS_PUBLIC_RELEASE=true
+          else
+            HAS_PUBLIC_RELEASE=false
+          fi
+          echo "Tag name: $TAG_NAME"
+          echo "Is draft: $IS_DRAFT"
+          echo "Has public release: $HAS_PUBLIC_RELEASE"
+
   test-gh-commands:
     runs-on: ubuntu-latest
     env:
