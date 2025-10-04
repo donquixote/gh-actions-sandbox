@@ -16,15 +16,18 @@ jobs:
       - name: Determine the tag name
         id: get_tag_name
         run: |
+          set -e
           if [[ "${{ github.event_name }}" == "release" ]]; then
             TAG_NAME=${{ github.event.release.tag_name }}
           elif [[ "${{ github.event_name }}" == "push" ]]; then
             TAG_NAME=${{ github.ref_name }}
           else
-            # Unreachable code.
+            echo "Unexpected trigger event '${{ github.event_name }}'."
             exit 1
           fi
+          echo "Tag name: $TAG_NAME"
           IS_DRAFT=$(gh release view --json isDraft $TAG_NAME)
+          echo "Is draft: $IS_DRAFT"
           if [ ! IS_DRAFT=$(gh release view --json isDraft $TAG_NAME) ]; then
             echo "No release found"
             HAS_PUBLIC_RELEASE=false
@@ -35,8 +38,6 @@ jobs:
             echo "Release is public"
             HAS_PUBLIC_RELEASE=false
           fi
-          echo "Tag name: $TAG_NAME"
-          echo "Is draft: $IS_DRAFT"
           echo "Has public release: $HAS_PUBLIC_RELEASE"
 
   test-gh-commands:
