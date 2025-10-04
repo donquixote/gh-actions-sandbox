@@ -1,3 +1,4 @@
+name: "Release ${{ github.event.release.tag_name || github.ref_name }}"
 on:
   release:
     types: [published]
