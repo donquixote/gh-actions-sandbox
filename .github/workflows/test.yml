@@ -12,6 +12,7 @@ jobs:
     outputs:
       tag: ${{ steps.get_tag.outputs.tag }}
     steps:
+      - uses: actions/checkout@v2
       - name: Determine the tag name
         id: get_tag_name
         run: |
