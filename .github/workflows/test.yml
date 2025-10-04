@@ -8,52 +8,41 @@ on:
 
 jobs:
   prepare:
+    name: "Find release for ${{ github.event.release.tag_name || github.ref_name }} - ${{ steps.get_release_tag.outputs.status || '..' }}"
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
     outputs:
-      tag: ${{ steps.get_release_tag.outputs.tag || '(??)' }}
+      status: ${{ steps.get_release_tag.outputs.status }}
+      tag: ${{ steps.get_release_tag.outputs.tag }}
     steps:
       - uses: actions/checkout@v2
-      - name: "Determine the tag name ${{ github.event.release.tag_name || github.ref_name }}"
+      - name: "Check release for ${{ github.event.release.tag_name || github.ref_name }}"
         id: get_release_tag
         run: |
           set -e
-          if [[ "${{ github.event_name }}" == "release" ]]; then
-            TAG_NAME=${{ github.event.release.tag_name }}
-          elif [[ "${{ github.event_name }}" == "push" ]]; then
-            TAG_NAME=${{ github.ref_name }}
-          else
-            echo "Unexpected trigger event '${{ github.event_name }}'."
-            exit 1
-          fi
-          echo "Tag name: $TAG_NAME"
+          TAG_NAME=${{ github.event.release.tag_name || github.ref_name }}
           IS_DRAFT=$(gh release view --json isDraft --jq '.isDraft' $TAG_NAME 2>/dev/null) || true
-          if [[ $IS_DRAFT == "false" ]]; then
-            echo "There is a public release for '$TAG_NAME'."
-            echo "tag=$TAG_NAME" >> "$GITHUB_OUTPUT"
-          else
-            if [[ $IS_DRAFT == "true" ]]; then
-              echo "The release for '$TAG_NAME' is a draft."
-            else
-              echo "There is no release for '$TAG_NAME'."
-            fi
-            echo "tag=" >> "$GITHUB_OUTPUT"
-          fi
-          cat $GITHUB_OUTPUT
+          case "$IS_DRAFT" in
+            "true") STATUS="draft" ;;
+            "false") STATUS="public" ;;
+            *) STATUS="missing" ;;
+          esac
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG_NAME" >> "$GITHUB_OUTPUT"
 
   test-gh-commands:
-    name: "Release ${{ needs.prepare.outputs.tag }}"
+    name: "Release ${{ needs.prepare.outputs.status }}"
     needs: prepare
-    if: ${{ needs.prepare.outputs.tag != '' }}
+    if: ${{ needs.prepare.outputs.status == 'public' }}
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - run: 'echo "Value from prepare step: .${{ needs.prepare.outputs.tag }}."'
+      - run: 'echo "Value from prepare step: .${{ github.event.release.tag_name || github.ref_name }}."'
       - run: |
           set -e
-          echo "TAG_NAME=${{ needs.prepare.outputs.tag }}" >> $GITHUB_ENV
+          echo "TAG_NAME=${{ github.event.release.tag_name || github.ref_name }}" >> $GITHUB_ENV
           echo $GITHUB_ENV
           cat $GITHUB_ENV
       - run: 'echo "Tag name: $TAG_NAME"'
