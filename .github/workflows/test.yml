@@ -14,7 +14,7 @@ jobs:
       tag: ${{ steps.get_release_tag.outputs.tag || '(??)' }}
     steps:
       - uses: actions/checkout@v2
-      - name: Determine the tag name
+      - name: "Determine the tag name ${{ github.event.release.tag_name || github.ref_name }}"
         id: get_release_tag
         run: |
           set -e
