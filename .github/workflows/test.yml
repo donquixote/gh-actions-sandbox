@@ -32,7 +32,7 @@ jobs:
           echo "tag=$TAG_NAME" >> "$GITHUB_OUTPUT"
 
   test-gh-commands:
-    name: "Release ${{ github.event.release.tag_name || github.ref_name }} is ${{ needs.prepare.outputs.status || '...' }}"
+    name: "Release ${{ github.event.release.tag_name || github.ref_name || 'skipped' }} is ${{ needs.prepare.outputs.status || '...' }}"
     needs: prepare
     if: ${{ needs.prepare.outputs.status == 'public' }}
     runs-on: ubuntu-latest
