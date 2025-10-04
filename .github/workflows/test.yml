@@ -28,7 +28,7 @@ jobs:
           fi
           echo "Tag name: $TAG_NAME"
           IS_DRAFT=$(gh release view --json isDraft --jq '.isDraft' $TAG_NAME) || true
-          if [ $IS_DRAFT -eq 'false' ]; then
+          if [[ $IS_DRAFT == "false" ]]; then
             echo "tag=$TAG_NAME" >> "$GITHUB_OUTPUT"
           else
             echo "tag=''" >> "$GITHUB_OUTPUT"
