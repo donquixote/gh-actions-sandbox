@@ -11,11 +11,11 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     outputs:
-      tag: ${{ steps.get_tag.outputs.tag }}
+      tag: ${{ steps.get_release_tag.outputs.tag }}
     steps:
       - uses: actions/checkout@v2
       - name: Determine the tag name
-        id: get_tag_name
+        id: get_release_tag
         run: |
           set -e
           if [[ "${{ github.event_name }}" == "release" ]]; then
@@ -28,24 +28,23 @@ jobs:
           fi
           echo "Tag name: $TAG_NAME"
           IS_DRAFT=$(gh release view --json isDraft --jq '.isDraft' $TAG_NAME) || true
-          if [ -z "$IS_DRAFT" ]; then
-            echo "Release $TAG_NAME not found"
-            HAS_PUBLIC_RELEASE=false
-          elif [ $IS_DRAFT -eq 'false' ]; then
-            echo "Release $TAG_NAME is not public"
-            HAS_PUBLIC_RELEASE=true
+          if [ $IS_DRAFT -eq 'false' ]; then
+            echo "tag=$TAG_NAME" >> "$GITHUB_OUTPUT"
           else
-            echo "Release $TAG_NAME is public"
-            HAS_PUBLIC_RELEASE=false
+            echo "tag=''" >> "$GITHUB_OUTPUT"
           fi
-          echo "Is draft: $IS_DRAFT"
-          echo "Has public release: $HAS_PUBLIC_RELEASE"
 
   test-gh-commands:
+    needs: prepare
+    if: ${{ needs.prepare.outputs.tag != '' }}
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
+      - run: echo ${{ needs.prepare.outputs.tag }}
+      - run: echo "TAG_NAME=${{ needs.prepare.outputs.tag }}" >> $GITHUB_ENV
+      - run: echo $TAG_NAME
+      - name: "Tag: $TAG_NAME"
       - uses: actions/checkout@v2
       - name: Test gh release list 1
         continue-on-error: true
