@@ -7,6 +7,8 @@ on:
 jobs:
   prepare:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
     outputs:
       tag: ${{ steps.get_tag.outputs.tag }}
     steps:
