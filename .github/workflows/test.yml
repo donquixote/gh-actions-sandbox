@@ -42,6 +42,7 @@ jobs:
           cat $GITHUB_OUTPUT
 
   test-gh-commands:
+    name: "Release ${{ needs.prepare.outputs.tag }}"
     needs: prepare
     if: ${{ needs.prepare.outputs.tag != '' }}
     runs-on: ubuntu-latest
