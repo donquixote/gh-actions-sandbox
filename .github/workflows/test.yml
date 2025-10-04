@@ -26,8 +26,6 @@ jobs:
             exit 1
           fi
           echo "Tag name: $TAG_NAME"
-          IS_DRAFT=$(gh release view --json isDraft $TAG_NAME)
-          echo "Is draft: $IS_DRAFT"
           if [ ! IS_DRAFT=$(gh release view --json isDraft $TAG_NAME) ]; then
             echo "No release found"
             HAS_PUBLIC_RELEASE=false
