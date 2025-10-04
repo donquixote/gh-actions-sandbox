@@ -27,7 +27,8 @@ jobs:
             exit 1
           fi
           echo "Tag name: $TAG_NAME"
-          if [ ! IS_DRAFT=$(gh release view --json isDraft -jq '.isDraft' $TAG_NAME) ]; then
+          IS_DRAFT=$(gh release view --json isDraft -jq '.isDraft' $TAG_NAME) || true
+          if [ -z "$IS_DRAFT" ]; then
             echo "Release $TAG_NAME not found"
             HAS_PUBLIC_RELEASE=false
           elif [ $IS_DRAFT -eq 'false' ]; then
