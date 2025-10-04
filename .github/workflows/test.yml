@@ -27,12 +27,15 @@ jobs:
             exit 1
           fi
           echo "Tag name: $TAG_NAME"
-          IS_DRAFT=$(gh release view --json isDraft --jq '.isDraft' $TAG_NAME) || true
+          IS_DRAFT=$(gh release view --json isDraft --jq '.isDraft' $TAG_NAME 2>/dev/null) || true
           if [[ $IS_DRAFT == "false" ]]; then
+            echo "Success, there is a public release"
             echo "tag=$TAG_NAME" >> "$GITHUB_OUTPUT"
           else
+            echo "Failure, there is no public release"
             echo "tag=''" >> "$GITHUB_OUTPUT"
           fi
+          cat $GITHUB_OUTPUT
 
   test-gh-commands:
     needs: prepare
