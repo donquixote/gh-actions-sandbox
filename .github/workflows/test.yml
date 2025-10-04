@@ -11,7 +11,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     outputs:
-      tag: ${{ steps.get_release_tag.outputs.tag }}
+      tag: ${{ steps.get_release_tag.outputs.tag || '(??)' }}
     steps:
       - uses: actions/checkout@v2
       - name: Determine the tag name
