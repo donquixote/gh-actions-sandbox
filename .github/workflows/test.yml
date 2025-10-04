@@ -8,7 +8,7 @@ on:
 
 jobs:
   prepare:
-    name: "Find release for ${{ github.event.release.tag_name || github.ref_name }} - ${{ steps.get_release_tag.outputs.status || '..' }}"
+    name: "Find release for ${{ github.event.release.tag_name || github.ref_name }} - ${{ outputs.status || '..' }}"
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
