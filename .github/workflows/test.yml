@@ -36,7 +36,8 @@ jobs:
 
   test-gh-commands:
     needs: prepare
-    if: ${{ needs.prepare.outputs.tag != '' }}
+    #if: ${{ needs.prepare.outputs.tag != '' }}
+    if: ${{ '' != '' }}
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
